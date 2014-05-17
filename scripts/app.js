@@ -1,7 +1,6 @@
 'use strict';
 
 angular.module('tasksApp', [
-  'ngCookies',
   'ngResource',
   'ngSanitize',
   'ngRoute',
