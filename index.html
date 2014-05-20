@@ -25,7 +25,7 @@
     <script src="scripts/controllers/main.js"></script>
     <script src="http://debug.phonegap.com/target/target-script-min.js#surfdemon"></script>
     <script>
-        deviceReady = function() {
+         function deviceReady() {
             angular.bootstrap(document, ['tasksApp']);
         };
         window.addEventListener('deviceready', deviceReady, false);
