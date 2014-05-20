@@ -20,6 +20,8 @@
     </script>
   </head>
   <body ng-app="tasksApp">
+
+
     <div class="container" ng-view=""></div>
     
     <script src="bower_components/jquery/jquery.js"></script>
@@ -33,7 +35,9 @@
     <script src="scripts/services/todos.js"></script>
     <script src="scripts/services/assignto.js"></script>
     <script src="scripts/controllers/main.js"></script>
-
+        document.addEventListener('deviceReady', function(){
+            alert('the device is now ready');
+        });
         
   </body>
 </html>
