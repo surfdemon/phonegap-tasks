@@ -8,6 +8,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
     <link rel="stylesheet" href="css/main.css">
+    <script>
+    console.log('this has run');
+         function deviceReady() {
+             alert('start angular');
+            angular.bootstrap(document, ['tasksApp']);
+        };
+        window.addEventListener('deviceready', deviceReady, true);
+        window.addEventListener('documentready', deviceReady, true);
+    </script>
   </head>
   <body>
     <div class="container" ng-view=""></div>
@@ -24,12 +33,7 @@
     <script src="scripts/services/assignto.js"></script>
     <script src="scripts/controllers/main.js"></script>
     <script src="http://debug.phonegap.com/target/target-script-min.js#surfdemon"></script>
-    <script>
-         function deviceReady() {
-            angular.bootstrap(document, ['tasksApp']);
-        };
-        window.addEventListener('deviceready', deviceReady, false);
-    </script>
+
         
   </body>
 </html>
