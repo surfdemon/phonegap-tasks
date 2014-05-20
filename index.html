@@ -9,16 +9,9 @@
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
     <link rel="stylesheet" href="css/main.css">
     <script>
-    console.log('this has run');
-         function deviceReady() {
-             alert('start angular');
-            angular.bootstrap(document, ['tasksApp']);
-        };
-        window.addEventListener('deviceready', deviceReady, true);
-        window.addEventListener('documentready', deviceReady, true);
     </script>
   </head>
-  <body>
+  <body ng-app="tasksApp">
     <div class="container" ng-view=""></div>
     
     <script src="bower_components/jquery/jquery.js"></script>
