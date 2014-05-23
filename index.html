@@ -8,18 +8,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
     <link rel="stylesheet" href="css/main.css">
-    <script>
     
-    function onDeviceReady() {
-        alert('device is now ready');
-    }
-    
-    document.addEventListener("deviceready", onDeviceReady, false);
-
-        
-    </script>
   </head>
-  <body ng-app="tasksApp">
+  <body>
 
 
     <div class="container" ng-view=""></div>
@@ -36,10 +27,16 @@
     <script src="scripts/services/assignto.js"></script>
     <script src="scripts/controllers/main.js"></script>
     <script src="phonegap.js"></script>
-    <script type="text/javascript">
-        document.addEventListener("deviceReady", function(){
-            alert('the device is now ready');
-        });
+    <script>
+    
+    function onDeviceReady() {
+    	angular.bootstrap(document, ['tasksApp']);
+        alert('device is now ready');
+    }
+    
+    document.addEventListener("deviceready", onDeviceReady, false);
+
+        
     </script>
   </body>
 </html>
