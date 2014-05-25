@@ -2,52 +2,74 @@
 
 angular.module('tasksApp')
   .service('tasksService', ['$rootScope', '$q', '$window', function($rootScope, $q, $window){
-    var indexedDB = $window.indexedDB;
-    var db=null;
-    var lastIndex=0;
-    var version = 5;
-    var newTask;
-    var request = indexedDB.open('tasksData', version);
-    request.onupgradeneeded = function(e){
-      console.log('Upgrading db to version ' + version);
-      db = e.target.result;
-      e.target.transaction.onerror = indexedDB.onerror;
-      if(db.objectStoreNames.contains('tasks')){
-        db.deleteObjectStore('tasks');
-      }
-      var store = db.createObjectStore('tasks', { keyPath: 'id', autoIncrement : true });
-    };
-    request.onsuccess = function(e){
-      db = e.target.result;
-      console.log('tasks db has been created / updated');
-    };
-    request.onerror = function(){
-      console.log('something went wrong trying to create / update the db');
-    };
+    var db = new PouchDB('tasks');
+    var remoteCouch = false;
+    
     var addTask = function(newTask){
       var q = $q.defer();
-      console.log(db);
-      var request = indexedDB.open('tasksData', version);
-      request.onsuccess = function(e){
-        console.log(newTask);
-          db = e.target.result;
-          var transaction = db.transaction(['tasks'], 'readwrite');
-          var objectStore = transaction.objectStore('tasks');
-          var req = objectStore.add(newTask);
-          req.onsuccess = function(e){
-            console.log(e.target.result);
-            q.resolve(e.target.result);
-          }
-          req.onerror = function(){
+      console.log('Trying to add task to PouchDB!');
+      var db = new PouchDB('tasks');
+      db.post(newTask, function callback(err, result){
+        if(!err){
+            q.resolve(result);
+            console.log('Successfully posted new task to PouchDB!');
+        }
+
+        if(err){
             q.reject();
-          }
-      };
-      request.onerror = function(e){
-        q.reject();
-      };
+            console.log('Something went wrong trying to post new task to PouchDB!');
+            console.log(err);
+        }
+      });
       return q.promise;
     };
-    var getTasks = function(){
+    
+//    var indexedDB = $window.indexedDB;
+//    var db=null;
+//    var lastIndex=0;
+    var version = 5;
+//    var newTask;
+//    var request = indexedDB.open('tasksData', version);
+//    request.onupgradeneeded = function(e){
+//      console.log('Upgrading db to version ' + version);
+//      db = e.target.result;
+//      e.target.transaction.onerror = indexedDB.onerror;
+//      if(db.objectStoreNames.contains('tasks')){
+//        db.deleteObjectStore('tasks');
+//      }
+//      var store = db.createObjectStore('tasks', { keyPath: 'id', autoIncrement : true });
+//    };
+//    request.onsuccess = function(e){
+//      db = e.target.result;
+//      console.log('tasks db has been created / updated');
+//    };
+//    request.onerror = function(){
+ //     console.log('something went wrong trying to create / update the db');
+  //  };
+//var addTask = function(newTask){
+//  var q = $q.defer();
+//  console.log(db);
+//  var request = indexedDB.open('tasksData', version);
+//  request.onsuccess = function(e){
+////console.log(newTask);
+////  db = e.target.result;
+////  var transaction = db.transaction(['tasks'], 'readwrite');
+////  var objectStore = transaction.objectStore('tasks');
+////  var req = objectStore.add(newTask);
+////  req.onsuccess = function(e){
+//////console.log(e.target.result);
+//////q.resolve(e.target.result);
+////  }
+////  req.onerror = function(){
+//////q.reject();
+////  }
+//  };
+//  request.onerror = function(e){
+////q.reject();
+//  };
+//  return q.promise;
+//};
+  var getTasks = function(){
       console.log('hello from getTasks in service');
       var q = $q.defer();
       var request = indexedDB.open('tasksData', version);
