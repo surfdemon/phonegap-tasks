@@ -16,7 +16,7 @@
 	<div class="alert alert-danger" ng-show="errorMessage">
 		{{ errorMessage }}
 	</div>
-	<div class="row marketing todos" ng-repeat="todo in filteredTodos = (todos | filter: filter) track by todo.id" ng-controller="todoCtrl" class="todo">
+	<div class="row marketing todos" ng-repeat="todo in filteredTodos = (todos | filter: filter) track by todo._id" ng-controller="todoCtrl" class="todo">
 		<div class="row">
 	        <div class="col-md-8">
 				{{ todo.todo }}

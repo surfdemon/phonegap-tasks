@@ -23,11 +23,78 @@ angular.module('tasksApp')
       });
       return q.promise;
     };
+    var getTasks = function(){
+      console.log('hello from getTasks in service');
+      var q = $q.defer();
+      var db = new PouchDB('tasks');
+      db.allDocs({include_docs: true, descending: true}, function(err, result){
+        if(!err){
+            var tasks = [];
+            console.log('Successfully got all docs from PouchDB!');
+            result.rows.forEach(function(row){
+                tasks.push(row.doc);
+                console.log(row.doc);
+            });
+            console.log('the tasks from pouchdb are ');
+            console.log(tasks);
+            q.resolve(tasks);
+        }
+        
+        if(err){
+            q.reject();
+            console.log('There was a problem getting all the docs from PouchDB!');
+            console.log(err);
+        }
+      });
+      return q.promise;
+    };
+    var updateTask = function(task){
+      console.log('hello from inside updateTask in the service');
+      var q = $q.defer();
+      var db = new PouchDB('tasks');
+      console.log('trying to update task in PouchDB');
+      console.log(task);
+      db.put(task, function(err, result){
+        if(!err){
+            q.resolve(result);
+            console.log('Successfully update task in PouchDB!');
+            //$rootscope.$apply();
+        }
+    
+        if(err){
+           q.reject();
+           console.log('Something went wrong trying to update task in PouchDB!');
+           console.log(err);
+        }
+      });
+      
+      return q.promise;
+    };
+	var deleteTask = function(task){
+        console.log('now inside the deleteTask function in the service');
+        var q = $q.defer();
+        var db = new PouchDB('tasks');
+
+		db.remove(task, function(err, result){
+			if(!err){
+				q.resolve(result);
+				console.log('task was deleted from PouchDB!');
+			}
+			
+			if(err){
+				q.reject();
+				console.log('There was a problem removing the task from PouchDB!');
+				console.log(err);
+			}
+		});
+		
+      return q.promise;
+    };
     
 //    var indexedDB = $window.indexedDB;
 //    var db=null;
 //    var lastIndex=0;
-    var version = 5;
+//    var version = 5;
 //    var newTask;
 //    var request = indexedDB.open('tasksData', version);
 //    request.onupgradeneeded = function(e){
@@ -69,94 +136,94 @@ angular.module('tasksApp')
 //  };
 //  return q.promise;
 //};
-  var getTasks = function(){
-      console.log('hello from getTasks in service');
-      var q = $q.defer();
-      var request = indexedDB.open('tasksData', version);
-      request.onsuccess = function(e){
-        console.log('database was oppened successfully in the getTasks function in todoService');
-          db = e.target.result;
-          var transaction = db.transaction(['tasks'], 'readwrite');
-          var objectStore = transaction.objectStore('tasks');
-          var tasks = [];
-          objectStore.openCursor().onsuccess = function(e){
-            console.log('cursor is open');
-            var cursor = e.target.result;
-            if(cursor){
-              console.log('got a task from indexedDB');
-              tasks.push(cursor.value);
-              cursor.continue();
-            } else {
-              q.resolve(tasks);
-              console.log('no more entries in the cursor');
-            }
-          };
-          //objectStore.add(newTask);
-        console.log(db);
-      };
-      request.onerror = function(e){
-        console.log('Something went wrong opening the database for getTasks');
-        q.reject();
-      };
-      return q.promise;
-    };
-    var updateTask = function(task){
-      console.log('hello from inside updateTask in the service');
-      var q = $q.defer();
-      var request = indexedDB.open('tasksData', version);
-      request.onsuccess = function(e){
-        console.log('database was opened and now in the onsuccess function for updateTask in the service ');
-        db = e.target.result;
-        var transaction = db.transaction(['tasks'], 'readwrite');
-        var objectStore = transaction.objectStore('tasks');
-        console.log(task);
-        var request = objectStore.get(task.id);
-        request.onsuccess = function(e){
-          var oldTask = request.result;
-          oldTask = task;
-          var requestUpdate = objectStore.put(oldTask);
-          requestUpdate.onsuccess = function(e){
-            console.log('The task should now be updated in indexedDB');
-            $rootScope.$apply();
-            q.resolve();
-          };
-          requestUpdate.onerror = function(e){
-            console.log('Something went wrong trying to update the task');
-            q.reject(); 
-          };
-        };
-        request.onerror = function(e){
-          console.log('there was a problem trying to get the task to update in updateTask in the service');
-          q.reject();
-        };
-      }
-      return q.promise;
-    };
-    var deleteTask = function(task){
-      console.log('now inside the deleteTask function in the service');
-      var q = $q.defer();
-      var request = indexedDB.open('tasksData', version);
-      request.onsuccess = function(e){
-        console.log('Opened the database successfully in the service in the deleteTask function');
-        db = e.target.result;
-        var transaction = db.transaction(['tasks'], 'readwrite');
-        var objectStore = transaction.objectStore('tasks');
-        var deleteRequest = objectStore.delete(task.id);
-        deleteRequest.onsuccess = function(e){
-          console.log('task should now be deleted from indexedDB');
-          q.resolve();
-        };
-        deleteRequest.onerror = function(e){
-          console.log('something went wrong trying to delete the task from indexedDB');
-          q.reject();
-        };
-      };
-      request.onerror = function(e){
-        console.log('In deleteTask there was an error trying to open the database in the service');
-        q.reject();
-      };
-      return q.promise;
-    };
+//var getTasks = function(){
+//////console.log('hello from getTasks in service');
+//////var q = $q.defer();
+//////var request = indexedDB.open('tasksData', version);
+//////request.onsuccess = function(e){
+////////console.log('database was oppened successfully in the getTasks function in todoService');
+//////////db = e.target.result;
+//////////var transaction = db.transaction(['tasks'], 'readwrite');
+//////////var objectStore = transaction.objectStore('tasks');
+//////////var tasks = [];
+//////////objectStore.openCursor().onsuccess = function(e){
+////////////console.log('cursor is open');
+////////////var cursor = e.target.result;
+////////////if(cursor){
+//////////////console.log('got a task from indexedDB');
+//////////////tasks.push(cursor.value);
+//////////////cursor.continue();
+////////////} else {
+//////////////q.resolve(tasks);
+//////////////console.log('no more entries in the cursor');
+////////////}
+//////////};
+////////////objectStore.add(newTask);
+////////console.log(db);
+//////};
+//////request.onerror = function(e){
+////////console.log('Something went wrong opening the database for getTasks');
+////////q.reject();
+//////};
+//////return q.promise;
+//  };
+//var updateTask = function(task){
+//  console.log('hello from inside updateTask in the service');
+//  var q = $q.defer();
+//  var request = indexedDB.open('tasksData', version);
+//  request.onsuccess = function(e){
+////console.log('database was opened and now in the onsuccess function for updateTask in the service ');
+////db = e.target.result;
+////var transaction = db.transaction(['tasks'], 'readwrite');
+////var objectStore = transaction.objectStore('tasks');
+////console.log(task);
+////var request = objectStore.get(task.id);
+////request.onsuccess = function(e){
+////  var oldTask = request.result;
+////  oldTask = task;
+////  var requestUpdate = objectStore.put(oldTask);
+////  requestUpdate.onsuccess = function(e){
+//////console.log('The task should now be updated in indexedDB');
+//////$rootScope.$apply();
+//////q.resolve();
+////  };
+////  requestUpdate.onerror = function(e){
+//////console.log('Something went wrong trying to update the task');
+//////q.reject(); 
+////  };
+////};
+////request.onerror = function(e){
+////  console.log('there was a problem trying to get the task to update in updateTask in the service');
+////  q.reject();
+////};
+//  }
+//  return q.promise;
+//};
+//	var deleteTask = function(task){
+//       console.log('now inside the deleteTask function in the service');
+//        var q = $q.defer();
+//        var request = indexedDB.open('tasksData', version);
+//        request.onsuccess = function(e){
+//        console.log('Opened the database successfully in the service in the deleteTask function');
+//        db = e.target.result;
+//        var transaction = db.transaction(['tasks'], 'readwrite');
+//        var objectStore = transaction.objectStore('tasks');
+//        var deleteRequest = objectStore.delete(task.id);
+//        deleteRequest.onsuccess = function(e){
+//          console.log('task should now be deleted from indexedDB');
+//          q.resolve();
+//        };
+//        deleteRequest.onerror = function(e){
+//          console.log('something went wrong trying to delete the task from indexedDB');
+//         q.reject();
+//        };
+//      };
+//      request.onerror = function(e){
+//        console.log('In deleteTask there was an error trying to open the database in the service');
+//        q.reject();
+//      };
+//      return q.promise;
+//    };
     return {
       getTasks: getTasks,
       addTask: addTask,
