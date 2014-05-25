@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('tasksApp')
-   .controller('todosCtrl', [ '$scope', 'tasksService', 'assigneesService' , function ($scope, tasksService, assigneesService) {
+   .controller('todosCtrl', [ '$rootScope', '$scope', 'tasksService', 'assigneesService' , function ($rootScope, $scope, tasksService, assigneesService) {
         $scope.todos = [];
         $scope.count = 0;
         $scope.moreDetails = false;
@@ -51,8 +51,10 @@ angular.module('tasksApp')
                   .then(function(status){ 
                     console.log(status);
                       console.log('task should now have been added');
-                      $scope.todo.id = status;
-                      $scope.todos.push($scope.todo);
+                      console.log(status);
+                      $scope.todo._id = status.id;
+                      $scope.todo._rev = status.rev;
+                      $scope.todos.push($scope.todo);    
                       $scope.todo = '';
                   }, function(err){
                     console.log('problem adding task' + err);

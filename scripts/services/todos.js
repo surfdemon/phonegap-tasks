@@ -8,9 +8,11 @@ angular.module('tasksApp')
     var addTask = function(newTask){
       var q = $q.defer();
       console.log('Trying to add task to PouchDB!');
-      var db = new PouchDB('tasks');
+      console.log(newTask);
+     // var db = new PouchDB('tasks');
       db.post(newTask, function callback(err, result){
         if(!err){
+        	console.log(result);
             q.resolve(result);
             console.log('Successfully posted new task to PouchDB!');
         }
@@ -26,7 +28,7 @@ angular.module('tasksApp')
     var getTasks = function(){
       console.log('hello from getTasks in service');
       var q = $q.defer();
-      var db = new PouchDB('tasks');
+      //var db = new PouchDB('tasks');
       db.allDocs({include_docs: true, descending: true}, function(err, result){
         if(!err){
             var tasks = [];
@@ -51,7 +53,7 @@ angular.module('tasksApp')
     var updateTask = function(task){
       console.log('hello from inside updateTask in the service');
       var q = $q.defer();
-      var db = new PouchDB('tasks');
+      //var db = new PouchDB('tasks');
       console.log('trying to update task in PouchDB');
       console.log(task);
       db.put(task, function(err, result){
@@ -73,7 +75,7 @@ angular.module('tasksApp')
 	var deleteTask = function(task){
         console.log('now inside the deleteTask function in the service');
         var q = $q.defer();
-        var db = new PouchDB('tasks');
+        //var db = new PouchDB('tasks');
 
 		db.remove(task, function(err, result){
 			if(!err){
